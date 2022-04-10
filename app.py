@@ -8,84 +8,92 @@ import altair as alt
 import random
 
 @st.cache
-def load_uu(data):
+def load_bible(data):
     df = pd.read_csv(data)
     return df
 
+def load_bible2(data):
+    df2 = pd.read_csv(data)
+    return df2
 def main():
+    st.title("Pistol Air Alkitab")
+    menu = ['Home','Multiverse','Search','About']
     
-    st.title("Kementrian Perdagangan")
-    menu = ['HOME','PERMENDAG 18 th 2019','PERMENDAG 92 th 2020','Glosary','Search','About']
-    
-   
+    df = load_bible('data/tb.csv')
+    df2 = load_bible2('data/tb2.csv')
+
     choice = st.sidebar.selectbox('Menu',menu)
-    if choice == 'PERMENDAG 18 th 2019':
-        df = load_uu('data/Perdag 18 th 2019.csv')
-        st.subheader("PERMENDAG 18 th 2019")
-        st.caption("METODE PENGUJIAN, TATA CARA PENDAFTARAN, PENGAWASAN, PENGHENTIAN KEGIATAN PERDAGANGAN DAN PENARIKAN BARANG TERKAIT DENGAN KEAMANAN, KESELAMATAN, KESEHATAN, DAN LINGKUNGAN HIDUP")
-        kitab_list = df['BAB'].unique().tolist()
-        kitab_name = st.sidebar.selectbox('BAB',kitab_list)
+    if choice == 'Home':
+        st.subheader("Single Verse Alkitab")
+        #st.dataframe(df)
+        kitab_list = df['kitab'].unique().tolist()
+        kitab_name = st.sidebar.selectbox('Kitab',kitab_list)
         pasal = st.sidebar.number_input('Pasal',1)
         ayat = st.sidebar.number_input('Ayat',1)
-        bible_df = df[df['BAB']== kitab_name]
+        bible_df = df[df['kitab']== kitab_name]
         #st.dataframe(bible_df)
         try:
-            selected_passage = bible_df[(bible_df['PASAL'] == pasal) & (bible_df['AYAT'] == ayat) ]
-            #st.write(selected_passage)   
-            passage_detail =" Pasal: {} Ayat: {}".format(pasal,ayat)
-            st.code(passage_detail)         
-            passage = "{} ".format(selected_passage['ISI'].values[0])
-            st.info(passage)           
+            selected_passage = bible_df[(bible_df['pasal'] == pasal) & (bible_df['ayat'] == ayat)]
+            #st.write(selected_passage)
+            passage_detail ="{} Pasal:: {} Ayat:: {}".format(kitab_name,pasal,ayat)
+            st.info(passage_detail)
+            passage = "{}".format(selected_passage['firman'].values[0])
+            st.write(passage)
         except:
             st.warning('Book is out of range')
         
-    elif choice == 'PERMENDAG 92 th 2020':
-        df = load_uu('data/Perdag 92 th 2020.csv')
-        st.subheader("PERMENDAG 92 th 2020")
-        st.caption("PERATURAN MENTERI PERDAGANGAN TENTANG PERDAGANGAN ANTARPULAU.")
-        pasal_list = df['PASAL'].unique().tolist()
-        pasal_name = st.sidebar.selectbox('PASAL',pasal_list)
-        ayat = st.sidebar.number_input('AYAT',1)
-        bible_df = df[df['PASAL']== pasal_name]
-        #st.dataframe(bible_df)
-        try:
-            selected_passage = bible_df[(bible_df['PASAL'] == pasal_name) & (bible_df['AYAT'] == ayat) ]
-            #st.write(selected_passage)   
-            passage_detail =" Pasal: {} Ayat: {}".format(pasal_name,ayat)
-            st.code(passage_detail)         
-            passage = "{} ".format(selected_passage['ISI'].values[0])
-            st.info(passage)           
-        except:
-            st.warning('Book is out of range')     
+        ## ------------random Ayat ---------------##
 
-
-    elif choice =='Glosary':
-        st.subheader("Glosary")  
-        df = load_uu('data/glosary2.csv')
-        kitab_list = df['Glosary'].unique().tolist()
-        kitab_name = st.sidebar.selectbox('Glosary',kitab_list)
-        bible_df = df[df['Glosary']== kitab_name]
-        dasar_list = df['Dasar'].unique().tolist()
-        dasar_name = st.sidebar.selectbox('Dasar',dasar_list)
-        dasar_df = df[df['Dasar']== dasar_name]
-        #st.dataframe(bible_df)
-        try:
-            passage_detail ="{} ".format(dasar_df['Dasar'].values[0])
-            st.code(passage_detail)
-            selected_passage = bible_df[(bible_df['Glosary'] == kitab_name) & (dasar_df['Dasar'] ==dasar_name) ]
-            #st.write(selected_passage)  
-            passage = "{} ".format(selected_passage['ISI'].values[0])
-            st.info(passage)           
-        except:
-            st.warning('Book is out of range')
+        #st.success('Satu Ayat Setiap Hari')
+        #pasal_list = range(10)
+        #ayat_list = range(20)
+        #ps_list = random.choice(pasal_list)
+        #ay_list =random.choice(ayat_list)
+        #random_kitab_name = random.choice(kitab_list)
+        #st.write("Kitab:{} Pasal:{} Ayat:{}".format(random_kitab_name,ps_list,ay_list))
+        #rand_kitab_df = df[df['kitab'] == random_kitab_name]
+        #try:
+            #randomly_selected_passage = rand_kitab_df[(rand_kitab_df ['pasal'] == ps_list) & (rand_kitab_df ['ayat'] == ay_list)]
+            #mytext=randomly_selected_passage['firman'].values[0]
+        #except:
+            #randomly_selected_passage = rand_kitab_df[(rand_kitab_df ['pasal'] == 1) & (rand_kitab_df ['ayat'] == 1)]
+            #mytext=randomly_selected_passage['firman'].values[0]
+        #sst.write(mytext)
 
     elif choice =='Search':
-        st.subheader("Search Pasal")
-        
+        st.subheader("Search Alkitab")
        
+        #-------------topic search--------------##
+        search_term = st.text_input('Search name in alkitab')
+        with st.expander ('View result'):
+                retreived_df=df[df['firman'].str.contains(search_term)]
+                st.dataframe(retreived_df[['kitab','pasal','ayat','firman']])
+                          
+
+    elif choice =='Multiverse':
+        st.subheader("Multi Verse Alkitab")
+        kitab_list = df2['kitab'].unique().tolist()
+        kitab_name = st.sidebar.selectbox('Kitab',kitab_list)
+        pasal = st.sidebar.number_input('Pasal',1)
+        bible_df = df2[(df2['kitab']== kitab_name) & (df2['pasal'] == pasal)]
+        ayat_list=  df2['ayat'].unique().tolist()
+        ayat =st.sidebar.multiselect('Ayat',ayat_list,default=1)
+        #st.write(ayat)
+        selected_passage = bible_df.iloc[ayat]
+        #st.write(selected_passage)
+        passage_detail ="{} Pasal:{} Ayat:{}".format(kitab_name,pasal,ayat)
+        st.info(passage_detail)
+        #st.dataframe(selected_passage)
+        
+        
+        st.info('Details')
+        for i, row in selected_passage.iterrows():
+            st.write(row['firman'])
+    
+
     else :
-        st.subheader('Create by Ignatius Arga')
-        st.text('Ignatius.arga@gmail.com')
+        st.subheader('Create by Pistolair')
+        st.text('pistol.air32@gmail.com')
 
 
 if __name__ == '__main__' :
