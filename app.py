@@ -1,8 +1,13 @@
-from turtle import pd
+from numpy import array
 import streamlit as st
 import streamlit.components.v1 as stc
+
 import pandas as pd
 
+import altair as alt
+import random
+
+@st.cache
 def load_uu(data):
     df = pd.read_csv(data)
     return df
