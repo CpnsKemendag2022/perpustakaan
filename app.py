@@ -60,13 +60,12 @@ def main():
         kitab_name = st.sidebar.selectbox('Glosary',kitab_list)
         bible_df = df[df['Glosary']== kitab_name]
         dasar_list = df['Dasar'].unique().tolist()
-        dasar_name = st.sidebar.selectbox('Dasar',dasar_list)
-        dasar_df = df[df['Dasar']== dasar_name]
+        dasar = st.sidebar.selectbox('Dasar',dasar_list)
         #st.dataframe(bible_df)
         try:
-            passage_detail ="{} {} ".format(dasar_df['Dasar'].values[0])
+            passage_detail ="{} ".format(dasar)
             st.code(passage_detail)
-            selected_passage = bible_df[(bible_df['Glosary'] == kitab_name) & (dasar_df['Dasar'] ==dasar_name) ]
+            selected_passage = bible_df[(bible_df['Glosary'] == kitab_name) & (bible_df['Dasar'] ==dasar) ]
             #st.write(selected_passage)  
             passage = "{} ".format(selected_passage['ISI'].values[0])
             st.info(passage)           
